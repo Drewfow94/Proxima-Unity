@@ -10,10 +10,14 @@ public class Movement : MonoBehaviour
     [SerializeField] float velocityY = 10f;
     [SerializeField] float velocityZ = 0f;
     [SerializeField] float rotationVelocity = 40f;
+
+    AudioSource rocketThrustSound;
+    
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rocketThrustSound = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -30,7 +34,16 @@ public class Movement : MonoBehaviour
         {
             Debug.Log("Pressed space - thrusters active");
             rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+            if(!rocketThrustSound.isPlaying)
+            {
+                rocketThrustSound.Play();
+            }
+            else 
+            {
+                rocketThrustSound.Stop();
+            }
         }
+        
     }
 
     void ProcessRotation()
