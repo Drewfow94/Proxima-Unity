@@ -1,17 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
+    // PARAMETERS - for fine tuning
+    // CACHE - object references
+    // STATE - private instance variables
     Rigidbody rb;
     [SerializeField] float mainThrust = 1000f;
-    [SerializeField] float velocityX = 0f;
-    [SerializeField] float velocityY = 10f;
-    [SerializeField] float velocityZ = 0f;
     [SerializeField] float rotationVelocity = 40f;
+    [SerializeField] AudioClip engineThrust;
+    [SerializeField] ParticleSystem thrusterOne;
+    [SerializeField] ParticleSystem thrusterTwo;
+    [SerializeField] ParticleSystem thrusterThree;
 
     AudioSource rocketThrustSound;
+    [SerializeField] bool cheatsEnabled = true;
     
     // Start is called before the first frame update
     void Start()
@@ -32,31 +39,92 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey("space"))
         {
-            Debug.Log("Pressed space - thrusters active");
-            rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
-            if(!rocketThrustSound.isPlaying)
-            {
-                rocketThrustSound.Play();
-            }
-            else 
-            {
-                rocketThrustSound.Stop();
-            }
+            StartThrust();
         }
-        
+        else
+        {
+            StopThrust();
+        }
+    }
+
+    void RotationControls()
+    {
+        if (Input.GetKey("a"))
+        {
+            RotateLeft();
+
+        }
+        else if (Input.GetKey("d"))
+        {
+            RotateRight();
+        }
+        else
+        {
+            StopRotation();
+        }
+    }
+
+    void ThrustingSound()
+    {
+        if (!rocketThrustSound.isPlaying)
+        {
+            rocketThrustSound.PlayOneShot(engineThrust);
+        }
+    }
+
+    void StartThrust()
+    {
+        rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+        if (!thrusterOne.isPlaying && !thrusterTwo.isPlaying && !thrusterThree.isPlaying)
+        {
+            thrusterOne.Play();
+            thrusterTwo.Play();
+            thrusterThree.Play();
+        }
+        ThrustingSound();
+    }
+
+    void StopThrust()
+    {
+        rocketThrustSound.Stop();
+        thrusterOne.Stop();
+        thrusterTwo.Stop();
+        thrusterThree.Stop();
     }
 
     void ProcessRotation()
     {
-        if (Input.GetKey("a"))
+        RotationControls();
+    }
+
+    void RotateLeft()
+    {
+        ApplyRotation(rotationVelocity);
+        if (!thrusterOne.isPlaying && !thrusterThree.isPlaying)
         {
-            ApplyRotation(rotationVelocity);
-        }
-        else if (Input.GetKey("d"))
-        {
-            ApplyRotation(-rotationVelocity);
+            thrusterOne.Play();
+            thrusterThree.Play();
         }
     }
+
+    void RotateRight()
+    {
+        ApplyRotation(-rotationVelocity);
+        if (!thrusterTwo.isPlaying && !thrusterThree.isPlaying)
+        {
+            thrusterTwo.Play();
+            thrusterThree.Play();
+        }
+
+    }
+
+    void StopRotation()
+    {
+        thrusterOne.Stop();
+        thrusterTwo.Stop();
+        thrusterThree.Stop();
+    }
+
 
     void ApplyRotation(float rotationThisFrame)
     {
@@ -64,4 +132,5 @@ public class Movement : MonoBehaviour
         transform.Rotate(Vector3.forward * rotationThisFrame * Time.deltaTime);
         rb.freezeRotation = false; // Unfreezing physics rotation
     }
+
 }

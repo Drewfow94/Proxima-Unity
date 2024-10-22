@@ -1,11 +1,40 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
+    [SerializeField] TMP_Text victoryBanner;
+    [SerializeField] TMP_Text loseBanner;
+
     [SerializeField] float loadLevelDelay = 2f;
+    [SerializeField] float victoryDelay = 1f;
+    [SerializeField] AudioClip crashSound;
+    [SerializeField] AudioClip victorySound;
+
+    [SerializeField] ParticleSystem crashParticles;
+    [SerializeField] ParticleSystem victoryParticles;
+    
+    AudioSource audioSource;
+
+    bool isTransitioning = false;
+    bool collisionDisabled = false;
+
+    [SerializeField] bool cheatsEnabled = false;
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    void Update()
+    {
+        DebugControls();
+    }
     void OnCollisionEnter(Collision other)
     {
+        if (isTransitioning || collisionDisabled) {return;}
+
         switch (other.gameObject.tag)
         {
             case "Starting":
@@ -13,10 +42,7 @@ public class CollisionHandler : MonoBehaviour
                 break;
             case "Finish":
                 Debug.Log("This is the end.");
-                Invoke("LoadLevel", loadLevelDelay);
-                break;
-            case "Fuel":
-                Debug.Log("You've gathered fuel.");
+                SuccessSequence();
                 break;
             default:
                 CrashSequence();
@@ -24,9 +50,25 @@ public class CollisionHandler : MonoBehaviour
         }
     }
 
+
+    void SuccessSequence()
+    {
+        isTransitioning = true;
+        audioSource.Stop();
+        victoryParticles.Play();
+        victoryBanner.text = "VICTORY";
+        audioSource.PlayOneShot(victorySound);
+        GetComponent<Movement>().enabled = false;
+        Invoke("LoadLevel", victoryDelay);
+    }
+
     void CrashSequence()
     {
-        // add SFX upon crash
+        isTransitioning = true;
+        audioSource.Stop();
+        crashParticles.Play();
+        loseBanner.text = "You Crashed :(";
+        audioSource.PlayOneShot(crashSound);
         // add  particle fx on crash
         GetComponent<Movement>().enabled = false;
         Invoke("ReloadLevel", loadLevelDelay);
@@ -46,5 +88,21 @@ public class CollisionHandler : MonoBehaviour
             nextSceneIndex = 0;
         }
         SceneManager.LoadScene(nextSceneIndex);
+    }
+
+    void DebugControls()
+    {
+        if(cheatsEnabled == true)
+        {
+            if(Input.GetKey("l"))
+            {
+                LoadLevel();
+            }
+
+            else if(Input.GetKey("c"))
+            {
+                collisionDisabled = !collisionDisabled;
+            }
+        }
     }
 }

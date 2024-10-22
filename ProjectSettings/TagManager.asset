@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Starting
   - Fuel
+  - VictoryBanner
   layers:
   - Default
   - TransparentFX
