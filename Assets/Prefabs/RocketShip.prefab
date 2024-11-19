@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 9179612991526711078}
   - component: {fileID: 9179612991526711079}
   - component: {fileID: 9179612991526711075}
+  - component: {fileID: 1649642460634376796}
   m_Layer: 0
   m_Name: RocketShip
   m_TagString: Player
@@ -305,14 +306,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainThrust: 1000
-  velocityX: 0
-  velocityY: 10
-  velocityZ: 0
   rotationVelocity: 40
   engineThrust: {fileID: 8300000, guid: 325a9255fc1dfba438a683030d4bcddd, type: 3}
   thrusterOne: {fileID: 2647063050945786277}
   thrusterTwo: {fileID: 4393439170064689809}
   thrusterThree: {fileID: 6608285761407065550}
+  cheatsEnabled: 1
 --- !u!114 &9179612991526711075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,6 +332,19 @@ MonoBehaviour:
   victorySound: {fileID: 8300000, guid: 77fb7b7a154816641b40ba1b32c409e4, type: 3}
   crashParticles: {fileID: 1550416041265383163}
   victoryParticles: {fileID: 1545656505368794298}
+  cheatsEnabled: 1
+--- !u!114 &1649642460634376796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8333313734916149883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 102b24dcfe2019b4daed370a1fce1f84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8419263700355287888
 GameObject:
   m_ObjectHideFlags: 0
